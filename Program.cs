@@ -1,192 +1,270 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using static System.Net.Mime.MediaTypeNames;
 
-
-namespace ConsoleApp1
-
+namespace Assignment2
 {
-    internal class Program
+
+    class UserProfile
     {
-        static void Main(string[] args)
+        private string username;
+        private string password;
+        private string email;
+
+        public string Username
+        {
+            get { return username; }
+            set
+            {
+                if (!string.IsNullOrWhiteSpace(value))
+                    username = value;
+                else
+                    Console.WriteLine("Invalid username!");
+            }
+        }
+
+        public string Password
+        {
+            get { return password; }
+            set
+            {
+                if (!string.IsNullOrWhiteSpace(value) && value.Length >= 6)
+                    password = value;
+                else
+                    Console.WriteLine("Password must be at least 6 characters.");
+            }
+        }
+
+        public string Email
+        {
+            get { return email; }
+            set
+            {
+                if (value.Contains("@"))
+                    email = value;
+                else
+                    Console.WriteLine("Invalid email format.");
+            }
+        }
+
+        public void DisplayProfile()
+        {
+            Console.WriteLine($"Username: {username}, Email: {email}");
+        }
+    }
+
+
+    class Vehicle
+    {
+        public string Make { get; set; }
+        public string Model { get; set; }
+        public int Year { get; set; }
+    }
+
+    class Truck : Vehicle
+    {
+        public void DisplayDetails()
+        {
+            Console.WriteLine($"Truck: {Make} {Model} ({Year})");
+        }
+    }
+
+    class Bus : Vehicle
+    {
+        public void DisplayDetails()
+        {
+            Console.WriteLine($"Bus: {Make} {Model} ({Year})");
+        }
+    }
+
+
+    class Calculator
+    {
+        public int Add(int a, int b) => a + b;
+        public float Add(float a, float b) => a + b;
+        public double Add(double a, double b) => a + b;
+        public int Add(int a, int b, int c) => a + b + c;
+    }
+
+
+    abstract class Employee
+    {
+        public string Name { get; set; }
+        public abstract double CalculateSalary();
+    }
+
+    class FullTimeEmployee : Employee
+    {
+        public double MonthlySalary { get; set; }
+        public override double CalculateSalary() => MonthlySalary;
+    }
+
+    class PartTimeEmployee : Employee
+    {
+        public double HourlyRate { get; set; }
+        public int HoursWorked { get; set; }
+        public override double CalculateSalary() => HourlyRate * HoursWorked;
+    }
+
+
+    class Student
+    {
+        public string Name { get; set; }
+        public int RollNo { get; set; }
+        public double Marks { get; set; }
+
+        public Student()
+        {
+            Name = "Unknown";
+            RollNo = 0;
+            Marks = 0;
+        }
+
+        public Student(string name, int rollNo)
+        {
+            Name = name;
+            RollNo = rollNo;
+            Marks = 0;
+        }
+
+        public Student(string name, int rollNo, double marks)
+        {
+            Name = name;
+            RollNo = rollNo;
+            Marks = marks;
+        }
+
+        public void Display()
+        {
+            Console.WriteLine($"Name: {Name}, Roll No: {RollNo}, Marks: {Marks}");
+        }
+    }
+
+
+    class Product
+    {
+        public int ProductID { get; set; }
+        public string ProductName { get; set; }
+
+        private double price;
+        public double Price
+        {
+            get { return price; }
+            set
+            {
+                if (value >= 0)
+                    price = value;
+                else
+                    Console.WriteLine("Price cannot be negative.");
+            }
+        }
+
+        public int Quantity { get; set; }
+
+        public void Display()
+        {
+            Console.WriteLine($"ID: {ProductID}, Name: {ProductName}, Price: {Price}, Quantity: {Quantity}");
+        }
+    }
+
+
+    class Book
+    {
+        public string Title { get; set; }
+        public bool IsAvailable { get; set; } = true;
+    }
+
+    class Member
+    {
+        public string Name { get; set; }
+        public List<Book> BorrowedBooks { get; set; } = new List<Book>();
+    }
+
+    class Library
+    {
+        public List<Book> Books { get; set; } = new List<Book>();
+        public List<Member> Members { get; set; } = new List<Member>();
+
+        public void RegisterMember(Member m) => Members.Add(m);
+
+        public void AddBook(Book b) => Books.Add(b);
+
+        public void LendBook(string title, Member m)
+        {
+            Book book = Books.Find(b => b.Title == title && b.IsAvailable);
+            if (book != null)
+            {
+                book.IsAvailable = false;
+                m.BorrowedBooks.Add(book);
+                Console.WriteLine($"{m.Name} borrowed {title}");
+            }
+            else
+                Console.WriteLine("Book not available.");
+        }
+    }
+
+
+    class Program
+    {
+        static void Main()
         {
 
-            // Function for print any Array
-            void PrintArray(int[] arr)
-            {
-                for (int i = 0; i < arr.Length; i++)
-                {
-                    Console.Write(arr[i] + " ");
-                }
-                Console.WriteLine();
-            }
-            //QUESTION 1
-            //Imagine you are developing a basic calculator for a financial application.
-            //You need to calculate the total sum of all the transactions recorded in a day.
-            //Write a C# program to find the sum of all elements in an integer array using a loop.
+            Console.WriteLine("\n--- Experiment 1 ---");
+            UserProfile u1 = new UserProfile { Username = "John", Password = "123456", Email = "john@mail.com" };
+            UserProfile u2 = new UserProfile { Username = "Alice", Password = "abcdef", Email = "alice@mail.com" };
+            u1.DisplayProfile();
+            u2.DisplayProfile();
 
-            int[] transactions = { 200, -150, 340, 500, -100 };
-            int sum = 0;
-            for (int i = 0; i < transactions.Length; i++)
-            {
-                sum += transactions[i];
-            }
-            Console.WriteLine("Total sum of all transaction : " + sum);
 
-            // QUESTION 2
-            //You are working on an analytics tool that needs to find the average score of a class from a list of floating-point numbers.
-            //Create a C# program that calculates the average of values in a floating-point array using a loop.
+            Console.WriteLine("\n--- Experiment 2 ---");
+            Truck t = new Truck { Make = "Tata", Model = "X1", Year = 2022 };
+            Bus b = new Bus { Make = "Volvo", Model = "B9R", Year = 2021 };
+            t.DisplayDetails();
+            b.DisplayDetails();
 
-            float[] scores = { 85.5f, 90.3f, 78.4f, 88.9f, 92.1f };
-            float total = 0;
-            for (int i = 0; i < scores.Length; i++)
-            {
-                total += scores[i];
-            }
-            float Average = total / scores.Length;
-            Console.WriteLine("Average : " + Average);
 
-            // QUESTION 3
-            //Develop a C# program that finds the largest element in an integer array using a loop and if-else statements.
+            Console.WriteLine("\n--- Experiment 3 ---");
+            Calculator calc = new Calculator();
+            Console.WriteLine(calc.Add(2, 3));
+            Console.WriteLine(calc.Add(2.5f, 3.5f));
+            Console.WriteLine(calc.Add(2.5, 3.5));
+            Console.WriteLine(calc.Add(1, 2, 3));
 
-            int[] prices = { 1500, 2300, 999, 3200, 1750 };
-            int max = 0;
-            for (int i = 0; i < prices.Length - 1; i++)
-            {
-                if (prices[i] > max)
-                {
-                    max = prices[i];
-                }
-            }
-            Console.WriteLine("Max Value : " + max);
 
-            //QUESTION 4
-            //Write a C# program that counts the number of even and odd elements in an integer array using a loop and if-else statements.(Even for male and Odd for female)
+            Console.WriteLine("\n--- Experiment 4 ---");
+            FullTimeEmployee fte = new FullTimeEmployee { Name = "Mark", MonthlySalary = 50000 };
+            PartTimeEmployee pte = new PartTimeEmployee { Name = "Sara", HourlyRate = 500, HoursWorked = 40 };
+            Console.WriteLine($"{fte.Name}'s Salary: {fte.CalculateSalary()}");
+            Console.WriteLine($"{pte.Name}'s Salary: {pte.CalculateSalary()}");
 
-            int[] participantCodes = { 102, 215, 324, 453, 536 };
-            int even = 0;
-            int odd = 0;
-            for (int i = 0; i < participantCodes.Length; i++)
-            {
-                if (participantCodes[i] % 2 == 0)
-                {
-                    even++;
-                }
-                else
-                {
-                    odd++;
-                }
-            }
-            Console.WriteLine("Total Male Person : " + even);
-            Console.WriteLine("Toatl Female : " + odd);
 
-            //QUESTION 5
-            //Implement a C# program that reverses the elements of an integer array using a loop.
+            Console.WriteLine("\n--- Experiment 5 ---");
+            Student s1 = new Student();
+            Student s2 = new Student("Rahul", 101);
+            Student s3 = new Student("Priya", 102, 89.5);
+            s1.Display();
+            s2.Display();
+            s3.Display();
 
-            int[] searchHistory = { 101, 202, 303, 404, 505 };
-            Console.Write("Orginal Element : ");
-            PrintArray(searchHistory);
-            Console.Write("Reverse Element : ");
-            for (int i = searchHistory.Length - 1; i >= 0; i--)
-            {
-                Console.Write(searchHistory[i] + " ");
-            }
-            Console.WriteLine();
 
-            //QUESTION 6
-            //Create a C# program that multiplies each element in an integer array by a specified factor using a loop.
+            Console.WriteLine("\n--- Experiment 6 ---");
+            Product p1 = new Product { ProductID = 1, ProductName = "Laptop", Price = 50000, Quantity = 5 };
+            Product p2 = new Product { ProductID = 2, ProductName = "Mouse", Price = -100, Quantity = 10 };
+            p1.Display();
+            p2.Display();
 
-            int[] measurements = { 2, 4, 6, 8 };
-            Console.Write("Before Multiplies by factor : ");
-            PrintArray(measurements);
-            int factor = 3;
-            for (int i = 0; i < measurements.Length; i++)
-            {
-                measurements[i] *= factor;
-            }
-            Console.Write("After Multiplies by factor : ");
-            PrintArray(measurements);
 
-            //QUESTION 7
-            //Write a C# program that searches for a specific value in an integer array using a loop and return its index if found.
+            Console.WriteLine("\n--- Experiment 7 ---");
+            Library lib = new Library();
+            Book book1 = new Book { Title = "C# Basics" };
+            Book book2 = new Book { Title = "OOP Concepts" };
+            lib.AddBook(book1);
+            lib.AddBook(book2);
 
-            int[] bookCodes = { 101, 203, 304, 405, 506 };
-            int searchCode = 304;
-            int idx(int[] arr, int num)
-            {
-                for (int i = 0; i < bookCodes.Length; i++)
-                {
-                    if (bookCodes[i] == searchCode)
-                    {
-                        return i;
-                    }
-                }
-                return -1;
-            }
-            Console.WriteLine("Index of search element : " + idx(bookCodes, searchCode));
+            Member m1 = new Member { Name = "Ankit" };
+            lib.RegisterMember(m1);
 
-            //QUESTION 8
-            //Develop a C# program that finds the second smallest element in an integer array using loops and sorting techniques.
-
-            int[] grades = { 56, 78, 89, 45, 67 };
-            for (int i = 0; i < grades.Length - 1; i++)
-            {
-                int smallest = i;
-                for (int j = i + 1; j < grades.Length; j++)
-                {
-                    if (grades[smallest] > grades[j])
-                    {
-                        smallest = j;
-                    }
-                }
-                int temp = grades[smallest];
-                grades[smallest] = grades[i];
-                grades[i] = temp;
-            }
-            Console.WriteLine("Second smalles element :" + grades[1]);
-
-            //QUESTION 9
-            //Create a C# program that removes all duplicates from an integer array using loops and additional data structures.
-
-            int[] ids = { 102, 215, 102, 324, 215 };
-            List<int> list = new List<int>();
-            for (int i = 0; i < ids.Length - 1; i++)
-            {
-                if (!list.Contains(ids[i]))
-                {
-                    list.Add(ids[i]);
-                }
-            }
-            Console.Write("Unique data : ");
-            foreach (int data in list)
-            {
-                Console.Write(data + " ");
-            }
-            Console.WriteLine();
-
-            //QUESTION 10
-            //Write a C# program that finds the common elements between two integer arrays using loops.
-
-            int[] dataset1 = { 1, 2, 3, 4, 5 };
-            int[] dataset2 = { 3, 4, 5, 6, 7 };
-            List<int> l = new List<int>();
-            for (int i = 0; i < dataset1.Length; i++)
-            {
-                for (int j = 0; j < dataset2.Length; j++)
-                {
-                    if (dataset1[i] == dataset2[j] && !l.Contains(dataset1[i]))
-                    {
-                        l.Add(dataset1[i]);
-                        break;
-                    }
-                }
-            }
-            Console.Write("Comman Data : ");
-            foreach (int data in l)
-            {
-                Console.Write(data + " ");
-            }
+            lib.LendBook("C# Basics", m1);
+            lib.LendBook("C# Basics", m1);
         }
     }
 }
